@@ -8,7 +8,3 @@ wheels/
 
 # Virtual environments
 .venv
-
-# uv files
-pyproject.toml
-uv.lock

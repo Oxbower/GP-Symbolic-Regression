@@ -10,7 +10,7 @@ requires-python = ">=3.12"
 dependencies = []
 
 [project.scripts]
-symbolic-regression = "symbolic_regression:main"
+main = "symbolic_regression:main"
 
 [build-system]
 requires = ["uv_build>=0.12.5,<0.13.0"]
