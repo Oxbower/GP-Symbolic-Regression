@@ -8,3 +8,4 @@ def save_plot():
 def scatter_plot(x, y):
     plt.figure()
     plt.scatter(x, y)
+    plt.title('Data Plot')

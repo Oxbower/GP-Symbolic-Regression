@@ -1,15 +1,12 @@
 import numpy as np
 
-import configs as cf
+def add_noise(rng=None, variance=0, size=0):
+    rand_mat = np.random.rand(size,) if rng is None else rng.random((size,))
+    return rand_mat * variance
 
-def add_noise(size):
-    np.random.seed(cf.SEED)
-    return np.random.rand(size,) * cf.VARIANCE
-
-def generate_data(fx):
+def generate_data(rng=None, variance=0, start=0, stop=0, num_samples=0, fx=()):
     print('Generate data...')
-    x = np.linspace(start=cf.START, stop=cf.STOP, num=cf.NUM_SAMPLES, endpoint=True)
-
-    data = fx(x) + add_noise(x.shape[0])
+    x = np.linspace(start=start, stop=stop, num=num_samples, endpoint=True)
+    data = fx(x) + add_noise(rng, variance, x.shape[0])
 
     return (x, data)
