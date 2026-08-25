@@ -4,9 +4,9 @@ from utils import out
 class genetic_program:
     def __init__(
         self, 
-        rng=None, 
+        rng, 
         max_pop=0, 
-        max_depth=0, 
+        max_size=0, 
         max_generation=0, 
         mutation=0, 
         crossover=0
@@ -14,10 +14,10 @@ class genetic_program:
         self.rng = rng
         self.max_generation = max_generation
         self.max_pop = max_pop
-        self.max_depth = max_depth
+        self.max_size = max_size
         self.population = [individual.individual(
             rng=self.rng, 
-            max_depth=self.max_depth, 
+            max_size=self.max_size, 
             mutation=mutation, 
             crossover=crossover) for _ in range(self.max_pop)]
 

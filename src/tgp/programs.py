@@ -1,7 +1,5 @@
 import numpy as np
 
-__eph_constant = None
-
 def __add(x, y):
     return x + y
 
@@ -16,18 +14,25 @@ def __div(x, y):
 def __mult(x, y):
     return x * y
 
-def __const(rng=None):
-    low = 0
-    high = 10
-    return np.random.randint(low=low, high=high) if rng is None else rng.integer(low=low, high=high)
+def __input(rng):
+    return 'input'
 
-def __erc(rng=None, mutate=False):
-    if __eph_constant != None or not mutate:
-        return __eph_constant
-    return np.random.rand() if rng is None else rng.random()
+def __erc(rng):
+    values = [np.e, np.pi, rng.random(), rng.integers(low=-10, high=10)]
+    return rng.choice(values)
 
-def random_program(rng=None, leaf=False):
-    programs = [__add, __sub, __div, __mult]
+def random_program(rng, leaf=False):
+    """
+        returns a random atomic program (uniform)
+
+        attr:
+            rng: to seed randomized programs (utilizes np default_rng)
+            leaf: if want random leaf node
+
+        returns:
+            ('program name', # arguements of returned program, function call to program)
+    """
+    programs = [('add', 2, __add), ('sub', 2, __sub), ('div', 2, __div), ('mult', 2, __mult)]
     if leaf:
-        programs = [__erc, __const]
-    return np.random.choice(programs) if rng is None else rng.choice(programs)
+        programs = [('erc', 0, __erc), ('input', 0, __input)]
+    return rng.choice(programs)

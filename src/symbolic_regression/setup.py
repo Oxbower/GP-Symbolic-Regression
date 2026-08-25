@@ -9,7 +9,7 @@ def regress_func(x):
 
 def setup():
     print('Setting up...')
-    rng = np.random.default_rng(seed=cf.SEED)
+    rng = np.random.default_rng(seed=cf.SEED) if cf.ENABLE_SEED else np.random.default_rng()
     x, data = gen.generate_data(
         rng=rng, 
         variance=cf.VARIANCE, 
@@ -24,12 +24,12 @@ def setup():
     gp.scatter_plot(y=data, x=x)
     gp.save_plot()
 
-def run_model(rng=None):
+def run_model(rng):
     print('Training...')
     model = tgp.genetic_program(
         rng=rng, 
         max_pop=cf.MAX_POP, 
-        max_depth=cf.MAX_DEPTH, 
+        max_size=cf.MAX_SIZE, 
         max_generation=cf.GENERATION, 
         mutation=cf.MUTATION, 
         crossover=cf.CROSSOVER)
