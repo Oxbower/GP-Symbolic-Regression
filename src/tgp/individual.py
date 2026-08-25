@@ -1,5 +1,4 @@
 from collections import deque
-from copy import deepcopy
 
 from . import node as td
 from . import programs
@@ -79,7 +78,7 @@ class individual:
                 args = node.args
                 res = [input if arg.res == 'input' else arg.res for arg in args]
                 node.res = node.op(*res)
-                # reset results after use
+                # reset results after use if not leaf
                 for arg in args:
                     if arg.op is not None:
                         arg.res = None

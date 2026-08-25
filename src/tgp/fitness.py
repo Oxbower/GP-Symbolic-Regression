@@ -1,2 +1,2 @@
-def fitness_evaluator():
+def fitness_evaluator(program):
     pass

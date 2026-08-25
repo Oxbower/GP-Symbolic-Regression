@@ -4,24 +4,15 @@ import configs as cf
 from utils import gen, gp
 from tgp import genetic_program as tgp
 
-def regress_func(x):
-    return np.sin(x)
-
 def setup():
     print('Setting up...')
-    rng = np.random.default_rng(seed=cf.SEED) if cf.ENABLE_SEED else np.random.default_rng()
-    x, data = gen.generate_data(
-        rng=rng, 
-        variance=cf.VARIANCE, 
-        start=cf.START, 
-        stop=cf.STOP, 
-        num_samples=cf.NUM_SAMPLES, 
-        fx=regress_func)
+    rng = gen.seed_random()
+    data = gen.generate_data(rng)
 
     best_program = run_model(rng=rng)
 
     # test data
-    gp.scatter_plot(y=data, x=x)
+    gp.scatter_plot(y=data[:, 1], x=data[:, 0])
     gp.save_plot()
 
 def run_model(rng):

@@ -1,5 +1,6 @@
-from . import individual
 from utils import out
+
+from . import individual, fitness
 
 class genetic_program:
     def __init__(
@@ -27,6 +28,9 @@ class genetic_program:
                 msg = f"Generation: {gen + 1} / {self.max_generation}", 
                 primer="\r", no_return=True, flush=True)
 
+            # do evaluation
+            for individual in self.population:
+                pass
+
             # do mutation and crossovers
 
-            # do evaluation
