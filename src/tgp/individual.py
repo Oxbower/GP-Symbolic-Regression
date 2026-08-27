@@ -1,21 +1,14 @@
 from collections import deque
 
-from . import node as td
 from . import programs
 
 class individual:
     def __init__(
-        self, 
-        rng, 
+        self,
         max_size=0,
-        mutation=0,
-        crossover=0
     ):
-        self.rng = rng
         self.max_size = max_size
-        self.mutation = mutation
-        self.crossover = crossover
-        self.size = 0
+        self.genotype = []
 
         # initialize the tree
         self.__initialize_individual()
@@ -24,66 +17,73 @@ class individual:
         self.__grow_tree()
 
     def __grow_tree(self):
-        # list of all nodes that need to be visited
         unvisited_nodes = deque()
-        inputs = 0
 
-        # generate root first (BFS)
-        # (name, num arguments, function)
-        prog = programs.random_program(rng=self.rng)
-        root = td.node(res=0, op=prog[2])
-        self.size += 1
+        # generate genotype (BFS)
+        prog = programs.random_program()
+        gene = {'op': prog[2], 'args': [i + 1 for i in range(prog[1])]}
+        self.genotype.append(gene)
+        unvisited_nodes.append(0)
 
-        for args in range(prog[1]):
-            arg = td.node()
-            root.set_arg(n_node=arg)
-            unvisited_nodes.append(arg)
+        # build out non-leaf nodes
+        while len(self.genotype) < self.max_size:
+            peek = self.genotype[unvisited_nodes[0]]
 
-        # visit all nodes in the tree and populate them
-        while self.size < self.max_size:
-            prog = programs.random_program(rng=self.rng)
-            unode = unvisited_nodes.popleft()
-            unode.set_op(op=prog[2])
-            self.size += 1
+            for index in peek['args']:
+                prog = programs.random_program()
+                gene = {'op': prog[2], 'args': []}
+                unvisited_nodes.append(index)
+                for args in range(prog[1]):
+                    gene['args'].append((self.genotype[-1]['args'][-1] + 1) + args)
+                self.genotype.append(gene)
 
-            for args in range(prog[1]):
-                arg = td.node()
-                unode.set_arg(n_node=arg)
-                unvisited_nodes.append(arg)
+            unvisited_nodes.popleft()
 
+        # build leaves
         while len(unvisited_nodes) > 0:
-            prog = programs.random_program(rng=self.rng, leaf=True)
-            unode = unvisited_nodes.popleft()
-            unode.set_res(prog[2](rng=self.rng))
-            self.size += 1
+            peek = self.genotype[unvisited_nodes[0]]
+            prog = programs.random_program(leaf=True)
+            for _ in peek['args']:
+                gene = {'value': prog[2]()}
+                self.genotype.append(gene)
+            unvisited_nodes.popleft()
 
-        self.root = root
+        # print(self.genotype)
 
     def __phenotype(self, input):
         # stack based eval
         stack = deque()
-        stack.append(self.root)
+        stack.append({'pos': 0, 'genome': self.genotype[0]})
+        result = [None for i in range(len(self.genotype))]
 
         while len(stack) > 0:
-            peek = stack[-1]
-            all_leaves = True
-            # store args that need to be computed
-            for arg in peek.args:
-                if arg.res is None:
-                    stack.append(arg)
-                    all_leaves = False
-            # if all leaves allow computation of node
-            if all_leaves:
-                node = stack.pop()
-                args = node.args
-                res = [input if arg.res == 'input' else arg.res for arg in args]
-                node.res = node.op(*res)
-                # reset results after use if not leaf
-                for arg in args:
-                    if arg.op is not None:
-                        arg.res = None
+            peek = stack[-1]['genome']
+            args = []
 
-        return self.root.res
+            for index in peek['args']:
+                gene = self.genotype[index]
+
+                # if a leaf node
+                if 'value' in gene:
+                    result[index] = input if gene['value'] == 'input' else gene['value']
+                    args.append(result[index])
+                    continue
+
+                # if not leaf node
+                if result[index] is not None:
+                    args.append(result[index])
+                    continue
+
+                stack.append({'pos': index, 'genome': gene})
+
+            if len(args) >= len(peek['args']):
+                # print(peek['op'], args, peek['op'](*args))
+                result[stack[-1]['pos']] = peek['op'](*args)
+                stack.pop()
+
+        # print(self.genotype)
+        return result[0]
+        
 
     def compute_tree(self, input):
         """ get output based on input, converts genotype to phenotype
