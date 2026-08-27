@@ -19,36 +19,39 @@ class individual:
     def __grow_tree(self):
         unvisited_nodes = deque()
 
-        # generate genotype (BFS)
+        # generate genotype (DFS -> because makes recombination easier)
         prog = programs.random_program()
-        gene = {'op': prog[2], 'args': [i + 1 for i in range(prog[1])]}
+        gene = {'op': prog[2], 'num_args': prog[1], 'args': []}
         self.genotype.append(gene)
         unvisited_nodes.append(0)
 
-        # build out non-leaf nodes
+        # build out non-leaf
         while len(self.genotype) < self.max_size:
-            peek = self.genotype[unvisited_nodes[0]]
+            prog = programs.random_program()
+            gene = {'op': prog[2], 'num_args': prog[1], 'args': []}
+            pos = len(self.genotype)
 
-            for index in peek['args']:
-                prog = programs.random_program()
-                gene = {'op': prog[2], 'args': []}
-                unvisited_nodes.append(index)
-                for args in range(prog[1]):
-                    gene['args'].append((self.genotype[-1]['args'][-1] + 1) + args)
-                self.genotype.append(gene)
+            peek = self.genotype[unvisited_nodes[-1]]
 
-            unvisited_nodes.popleft()
+            if len(peek['args']) < peek['num_args']:
+                peek['args'].append(len(self.genotype))
 
-        # build leaves
+            self.genotype.append(gene)
+            unvisited_nodes.append(pos)
+
+        # build out leaves
         while len(unvisited_nodes) > 0:
-            peek = self.genotype[unvisited_nodes[0]]
-            prog = programs.random_program(leaf=True)
-            for _ in peek['args']:
-                gene = {'value': prog[2]()}
-                self.genotype.append(gene)
-            unvisited_nodes.popleft()
-
-        # print(self.genotype)
+            top = unvisited_nodes[-1] # gene to fill out first
+            gene = self.genotype[top]
+            for index in range(gene['num_args']):
+                if len(gene['args']) == (index + 1):
+                    continue
+                prog = programs.random_program(leaf=True)
+                leaf = {'value': prog[2]()}
+                pos = len(self.genotype)
+                gene['args'].append(pos)
+                self.genotype.append(leaf)
+            unvisited_nodes.pop()
 
     def __phenotype(self, input):
         # stack based eval
