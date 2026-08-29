@@ -17,6 +17,13 @@ class genetic_program:
         self.population = np.array([
             individual.individual(max_size=self.max_size) for _ in range(self.max_pop)])
 
+        c1, c2 = crossover.recombination(self.population[0].genotype, self.population[1].genotype)
+
+        print(self.population[0].genotype)
+        print(c1)
+
+        print(len(c1), len(self.population[0].genotype))
+
     def train(self):
         # size = crossover.subtree_size(self.population[0].root.args[1])
         # print(size)

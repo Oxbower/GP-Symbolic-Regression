@@ -1,9 +1,12 @@
 GENERATION = 50
 MAX_POP = 500
-MAX_SIZE = 5
-SIZE_CAP = 64
 
-CO_SIZE_DRIFT = 7
+# Min tree size
+MAX_SIZE = 5
+
+# Prevents program from blowing up in size
+BLOAT_CONTROL = 64
+
 CO_NON_LEAF = .9
 CO_LEAF = .1
 

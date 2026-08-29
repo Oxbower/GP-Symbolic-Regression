@@ -28,14 +28,7 @@ def __erc():
 
 def random_program(leaf=False):
     """
-        returns a random atomic program (uniform)
-
-        attr:
-            rng: to seed randomized programs (utilizes np default_rng)
-            leaf: if want random leaf node
-
-        returns:
-            ('program name', # arguements of returned program, function call to program)
+        return structure -> ('program name', # arguments, function address)
     """
     programs = [('add', 2, __add), ('sub', 2, __sub), ('div', 2, __div), ('mult', 2, __mult), ('cos', 1, __cos)]
     if leaf:

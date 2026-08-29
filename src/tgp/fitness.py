@@ -7,7 +7,7 @@ def __fitness_evaluator(program):
     samples = gen.sample_data()
     y_out = (np.vectorize(program.compute_tree))(samples[:, 0])
     abs_err = np.abs(samples[:, 1] - y_out)
-    return np.average(abs_err)
+    return abs_err
 
 def fitness_rank(population):
     # have to define otype, was triggering generator over and over to discover dtype on its own
