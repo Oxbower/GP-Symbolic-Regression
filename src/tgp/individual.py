@@ -6,12 +6,14 @@ class individual:
     def __init__(
         self,
         max_size=0,
+        genotype=None
     ):
         self.max_size = max_size
-        self.genotype = []
+        self.genotype = genotype if genotype else []
 
         # initialize the tree
-        self.__initialize_individual()
+        if len(self.genotype) <= 0:
+            self.__initialize_individual()
 
     def __initialize_individual(self):
         self.__grow_tree()
@@ -61,6 +63,11 @@ class individual:
 
         while len(stack) > 0:
             peek = stack[-1]['genome']
+
+            # if tree is of size 1
+            if 'value' in peek:
+                return input if peek['value'] == 'input' else peek['value']
+
             args = []
 
             for index in peek['args']:
@@ -80,11 +87,9 @@ class individual:
                 stack.append({'pos': index, 'genome': gene})
 
             if len(args) >= len(peek['args']):
-                # print(peek['op'], args, peek['op'](*args))
                 result[stack[-1]['pos']] = peek['op'](*args)
                 stack.pop()
 
-        # print(self.genotype)
         return result[0]
         
 

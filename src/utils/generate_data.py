@@ -10,7 +10,7 @@ def seed_random():
     globals()['rng'] = np.random.default_rng(seed=cf.SEED) if cf.ENABLE_SEED else rng
 
 def __regress_func(x):
-    return 5 * np.sin(x)
+    return 5 * np.sin(x + (2 * np.cos(np.sin(2 * x))))
 
 def add_noise(size=0):
     rand_mat = rng.normal(loc=0, scale=cf.VARIANCE, size=size)
