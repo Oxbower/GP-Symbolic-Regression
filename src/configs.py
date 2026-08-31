@@ -7,7 +7,7 @@ NON_FIT_PARENT_PERCENT = .05 # to prevent early convergence and keep diversity
 MAX_SIZE = 5
 
 # Prevents program from blowing up in size
-BLOAT_CONTROL = 64
+BLOAT_CONTROL = 40
 
 CO_NON_LEAF = .9
 CO_LEAF = .1
