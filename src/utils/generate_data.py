@@ -9,17 +9,17 @@ def seed_random():
         print(f'Seeded Run -> {cf.SEED}')
     globals()['rng'] = np.random.default_rng(seed=cf.SEED) if cf.ENABLE_SEED else rng
 
-def regress_func(x):
-    return np.sin(x)
+def __regress_func(x):
+    return 5 * np.sin(x + (2 * np.cos(np.sin(2 * x))))
 
-def add_noise(variance=0, size=0):
-    rand_mat = rng.random((size,))
-    return rand_mat * variance
+def add_noise(size=0):
+    rand_mat = rng.normal(loc=0, scale=cf.VARIANCE, size=size)
+    return rand_mat * cf.VARIANCE
 
 def __generate_data():
     print('Generate data...')
     x = np.linspace(start=cf.START, stop=cf.STOP, num=cf.NUM_SAMPLES, endpoint=True)
-    y = regress_func(x) + add_noise(cf.VARIANCE, x.shape[0])
+    y = __regress_func(x) + add_noise(x.shape[0])
     globals()['data'] = np.array(list(zip(x, y)))
 
 def generate_data():

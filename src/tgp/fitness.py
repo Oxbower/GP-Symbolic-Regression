@@ -1,16 +1,18 @@
 import numpy as np
 
-from utils import generate_data as gen
+from utils import gen, ut
 
 def __fitness_evaluator(program):
     # measures total absolute error from actual to prediction
     samples = gen.sample_data()
     y_out = (np.vectorize(program.compute_tree))(samples[:, 0])
-    return np.sum(np.abs(samples[:, 1] - y_out))
+    abs_err = np.abs(samples[:, 1] - y_out)
+    return np.sum(abs_err)
 
 def fitness_rank(population):
-    # have to define otype, was triggering generator over and over to figure out dtype
+    # have to define otype, was triggering generator over and over to discover dtype on its own
     total_error = (np.vectorize(__fitness_evaluator, otypes=[np.float64]))(population)
     sorted_index = np.argsort(total_error)
+    sorted_err = total_error[sorted_index]
     sorted_pop = population[sorted_index]
     return sorted_pop
